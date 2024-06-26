@@ -3,8 +3,8 @@
 //  ios101-lab6-flix
 //
 
-import UIKit
 import Nuke
+import UIKit
 
 class DetailViewController: UIViewController {
 
@@ -15,6 +15,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var overviewTextView: UITextView!
     @IBOutlet weak var voteLabel: UILabel!
     @IBOutlet weak var releaseDateLabel: UILabel!
+    @IBOutlet weak var favouriteButton: UIButton!
 
     // TODO: Add favorite button outlet
 
@@ -26,9 +27,9 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
 
         // TODO: Update favorite button selected state
+        let favouritMovies = Movie.getMovies(forKey: Movie.favouriteKey)
 
-
-
+        favouriteButton.isSelected = favouritMovies.contains(movie)
 
         // MARK: Style views
         posterImageView.layer.cornerRadius = 20
@@ -84,7 +85,8 @@ class DetailViewController: UIViewController {
         if let posterPath = movie.posterPath,
 
             // Create a url by appending the poster path to the base url. https://developers.themoviedb.org/3/getting-started/images
-           let imageUrl = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
+            let imageUrl = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath)
+        {
 
             // Use the Nuke library's load image function to (async) fetch and load the image from the image url.
             Nuke.loadImage(with: imageUrl, into: posterImageView)
@@ -94,13 +96,22 @@ class DetailViewController: UIViewController {
         if let backdropPath = movie.backdropPath,
 
             // Create a url by appending the backdrop path to the base url. https://developers.themoviedb.org/3/getting-started/images
-           let imageUrl = URL(string: "https://image.tmdb.org/t/p/w500" + backdropPath) {
+            let imageUrl = URL(string: "https://image.tmdb.org/t/p/w500" + backdropPath)
+        {
 
             // Use the Nuke library's load image function to (async) fetch and load the image from the image url.
             Nuke.loadImage(with: imageUrl, into: backdropImageView)
         }
     }
 
+    @IBAction func didTabFavouriteButton(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        if sender.isSelected {
+            movie.addToFavourites()
+        } else {
+            movie.removeFromFavourites()
+        }
+    }
 
     /*
     // MARK: - Navigation
